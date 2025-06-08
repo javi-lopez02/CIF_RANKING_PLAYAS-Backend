@@ -13,6 +13,7 @@
     "add-indicators": "ts-node-dev src/Data/addCategoryIndicators.ts",
     "add-media": "ts-node-dev src/Data/addMediaLogos.ts",
     "add-school": "ts-node-dev src/Data/addSchool.ts",
+    "add-description": "ts-node-dev src/Data/addDescription.ts",
     "add-scientific": "ts-node-dev src/Data/addScientific.ts",
     "add-playas": "ts-node-dev src/Data/add2025.ts"
   },
