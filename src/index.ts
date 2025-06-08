@@ -26,6 +26,7 @@ app.use(
       "http://localhost:5174",
       "http://localhost:8000",
       "http://new.rankingmejoresplayas.com",
+      "https://new.rankingmejoresplayas.com",
     ],
     credentials: true,
   })
