@@ -1,0 +1,182 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL_SQL")
+}
+
+// Enumeraciones
+enum BEACH_TYPE {
+  RURAL
+  NATURAL
+  POBLADO
+  URBANA
+  ENCLAVE
+}
+
+enum STUDY_LEVEL {
+  SECONDARIA_O_UNIVERSIDAD
+  GRADUADO_UNIVERSITARIO
+  ESPECIALIZACION
+  MASTER
+  DOCTORADO
+}
+
+enum EXPERIENCE_YEARS {
+  MENOS_5
+  ENTRE_5_10
+  ENTRE_11_15
+  ENTRE_16_20
+  MAS_20
+}
+
+enum SPECIALITATION_AREA {
+  BIOLOGIA_ECOLOGIA
+  GEOGRAFIA
+  GEOLOGIA
+  GESTION_COSTERA
+  INGENIERIA
+  OCEANOGRAFIA
+  QUIMICA
+  TURISMO
+  CIENCIAS_NATURALES
+  OTROS
+}
+
+enum REGION {
+  ATLANTICO_NORTE
+  ATLANTICO_SUR
+  PACIFICO_NORTE
+  PACIFICO_SUR
+  MEDITERRANEO
+  CARIBE
+}
+
+// Modelos
+
+model Beach {
+  id               String       @id @default(uuid())
+  name             String
+  beachType        BEACH_TYPE
+  municipality     String
+  province         String
+  country          String
+  region           REGION
+  length           Float
+  latitude         Float
+  bqvImage         String
+  imageBeach       String
+  additionalImages Json
+  bqvScore         Float
+  evaluations      Evaluation[]
+
+  //Tipo de playa
+  residentialOccupation Int?
+  stiffening            Int?
+  mainUse               Int?
+  environmentalUse      Int?
+  legalProtection       Int?
+  services              Int?
+  landscape             Int?
+  vehicularAccess       Int?
+}
+
+model Expert {
+  id                  String                @id @default(uuid())
+  name                String
+  institution         String
+  codeNode            String?
+  country             String
+  studyLevel          STUDY_LEVEL?
+  experienceYears     EXPERIENCE_YEARS?
+  graduatedDate       String?
+  // specializationAreas SPECIALITATION_AREA[] @default([])
+  evaluations         Evaluation[]
+
+  //user-auth
+  email     String?  @unique
+  username  String?  @unique
+  password  String?
+  image     String?
+  status    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Evaluation {
+  id               String            @id @default(uuid())
+  expert           Expert            @relation(fields: [expertId], references: [id])
+  expertId         String
+  ExperienceTypes  ExperienceTypes[]
+  expertLastVisit  String
+  evaluationYear   Int
+  beach            Beach             @relation(fields: [beachId], references: [id])
+  beachId          String
+  creditibilyIndex Float
+  beachDescription String
+  beachImages      EvaluationImage[]
+  indicatorScores  IndicatorScore[]
+}
+
+model Category {
+  id         String      @id @default(uuid())
+  name       String      @unique
+  indicators Indicator[]
+}
+
+model Indicator {
+  id         String           @id @default(uuid())
+  categoryId String
+  category   Category         @relation(fields: [categoryId], references: [id])
+  name       String
+  scores     IndicatorScore[]
+}
+
+model IndicatorScore {
+  id           String     @id @default(uuid())
+  evaluation   Evaluation @relation(fields: [evaluationId], references: [id])
+  evaluationId String
+  indicator    Indicator  @relation(fields: [indicatorId], references: [id])
+  indicatorId  String
+  score        Float
+}
+
+model EvaluationImage {
+  id           String     @id @default(uuid())
+  evaluation   Evaluation @relation(fields: [evaluationId], references: [id])
+  evaluationId String
+  // url          String[]
+  author       String
+}
+
+model ExperienceTypes {
+  id           String     @id @default(uuid())
+  name         String
+  evaluationId String
+  evaluation   Evaluation @relation(fields: [evaluationId], references: [id])
+}
+
+model MediaCoverage {
+  id    String @id @default(uuid())
+  name  String
+  url   String
+  image String
+  year  Int
+}
+
+model Scientific {
+  id              String @id @default(uuid())
+  image           String
+  name            String
+  schoolLevel     String
+  areaExperiencia String
+  country         String
+}
+
+model School {
+  id      String @id @default(uuid())
+  name    String
+  country String
+}
